@@ -1,18 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const questions = [
-        {
-            question: "Qual é a cor do céu?",
-            choices: ["Azul", "Verde", "Amarelo", "Vermelho"],
-            correct: 0
-        },
-        {
-            question: "Quantos dias tem uma semana?",
-            choices: ["5", "6", "7", "8"],
-            correct: 2
-        },
-        // Adicione mais perguntas conforme necessário
-    ];
-
+    let questions = [];
+    let selectedQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
 
@@ -27,22 +15,43 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('start-quiz').addEventListener('click', startQuiz);
     document.getElementById('restart-quiz').addEventListener('click', startQuiz);
 
+    // Função para carregar perguntas do arquivo JSON
+    function loadQuestions() {
+        fetch('questions.json')
+            .then(response => response.json())
+            .then(data => {
+                questions = data;
+                startQuiz();
+            })
+            .catch(error => console.error('Erro ao carregar as perguntas:', error));
+    }
+
     function startQuiz() {
+        if (questions.length === 0) {
+            return loadQuestions();
+        }
         welcomeScreen.style.display = 'none';
         resultScreen.style.display = 'none';
         questionScreen.style.display = 'block';
         currentQuestionIndex = 0;
         score = 0;
+        selectedQuestions = getRandomQuestions(questions, 5);
         showQuestion();
+    }
+
+    function getRandomQuestions(array, num) {
+        const shuffled = array.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, num);
     }
 
     function showQuestion() {
         nextQuestionButton.style.display = 'none';
-        const currentQuestion = questions[currentQuestionIndex];
+        const currentQuestion = selectedQuestions[currentQuestionIndex];
         questionText.textContent = currentQuestion.question;
         choicesContainer.innerHTML = '';
         currentQuestion.choices.forEach((choice, index) => {
             const button = document.createElement('button');
+            button.classList.add('btn', 'btn-secondary', 'd-block', 'mb-2');
             button.textContent = choice;
             button.addEventListener('click', () => selectAnswer(index));
             choicesContainer.appendChild(button);
@@ -50,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function selectAnswer(selectedIndex) {
-        const currentQuestion = questions[currentQuestionIndex];
+        const currentQuestion = selectedQuestions[currentQuestionIndex];
         if (selectedIndex === currentQuestion.correct) {
             score++;
             alert('Correto!');
@@ -62,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     nextQuestionButton.addEventListener('click', () => {
         currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
+        if (currentQuestionIndex < selectedQuestions.length) {
             showQuestion();
         } else {
             showResult();
@@ -72,6 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function showResult() {
         questionScreen.style.display = 'none';
         resultScreen.style.display = 'block';
-        finalScore.textContent = `Sua pontuação final é: ${score} de ${questions.length}`;
+        finalScore.textContent = `Sua pontuação final é: ${score} de ${selectedQuestions.length}`;
     }
 });
