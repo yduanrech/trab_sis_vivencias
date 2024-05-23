@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para carregar perguntas do arquivo JSON
     function loadQuestions() {
-        fetch('questions.json')
+        fetch('questions.js')
             .then(response => response.json())
             .then(data => {
                 questions = data;
