@@ -57,30 +57,46 @@ document.addEventListener('DOMContentLoaded', function() {
             choicesContainer.appendChild(button);
         });
     }
-
+    
+    function hideFeedbackAndShowNext() {
+        document.getElementById('feedback').style.display = 'none'; // Esconde o feedback
+        nextQuestionButton.click(); // Avança para a próxima pergunta automaticamente
+    }
     function selectAnswer(selectedIndex) {
         const currentQuestion = selectedQuestions[currentQuestionIndex];
+        const feedback = document.getElementById('feedback');
+        feedback.style.display = 'block';
+        
+        // Remove as classes anteriores para garantir a correta aplicação das novas
+        feedback.className = 'feedback'; // Reset da class
+        feedback.classList.add(selectedIndex === currentQuestion.correct ? 'correct' : 'incorrect');
         if (selectedIndex === currentQuestion.correct) {
-            score++;
-            alert('Correto!');
-        } else {
-            alert(`Errado! A resposta correta é ${currentQuestion.choices[currentQuestion.correct]}`);
-        }
-        nextQuestionButton.style.display = 'block';
+                    score++;
+                } else {
+                }
+            
+        // Define a mensagem de feedback e cria/atualiza o botão OK
+        feedback.innerHTML = selectedIndex === currentQuestion.correct ? 
+            'Correto! OK' : `Errado! A resposta correta é ${currentQuestion.choices[currentQuestion.correct]} OK`;
+        // feedback.innerHTML += '<button id="ok-button">OK</button>'; // Adiciona botão OK
+    
+        // Configura o evento para o botão OK
+        document.getElementById('feedback').onclick = hideFeedbackAndShowNext;
     }
-
-    nextQuestionButton.addEventListener('click', () => {
+    
+    function hideFeedbackAndShowNext() {
+        document.getElementById('feedback').style.display = 'none'; // Esconde o feedback
+        // Avança para a próxima pergunta
         currentQuestionIndex++;
         if (currentQuestionIndex < selectedQuestions.length) {
             showQuestion();
         } else {
             showResult();
         }
-    });
 
     function showResult() {
         questionScreen.style.display = 'none';
         resultScreen.style.display = 'block';
         finalScore.textContent = `Sua pontuação final é: ${score} de ${selectedQuestions.length}`;
     }
-});
+}});
