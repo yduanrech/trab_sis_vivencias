@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
         // Define a mensagem de feedback e cria/atualiza o botão OK
         feedback.innerHTML = selectedIndex === currentQuestion.correct ? 
-            'Correto! OK' : `Errado! A resposta correta é ${currentQuestion.choices[currentQuestion.correct]} OK`;
-        // feedback.innerHTML += '<button id="ok-button">OK</button>'; // Adiciona botão OK
+            'Correto!' : `Errado! A resposta correta é ${currentQuestion.choices[currentQuestion.correct]}. `;
+        feedback.innerHTML += '<div><button id="ok-button">Clique aqui para continuar.</button></div>'; // Adiciona botão OK
     
         // Configura o evento para o botão OK
         document.getElementById('feedback').onclick = hideFeedbackAndShowNext;
